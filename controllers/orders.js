@@ -51,7 +51,7 @@ const watchNewOrder = async (req, res) => {
     // console.log(order);
     if (order.restaurantName === restaurant) {
       // console.log("in if subcribe");
-      res.write(`data: ${JSON.stringify(order)}\nid:${order._id}\n\n`);
+      res.write(`data: ${JSON.stringify(order)}\n\n`);
     }
   });
 
