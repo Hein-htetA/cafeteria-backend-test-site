@@ -52,14 +52,7 @@ const watchNewOrder = async (req, res) => {
     }
   });
 
-  res.write(`data: connection open\n\n`);
-
-  // if (restaurant === "hi") {
-  //   setInterval(() => {
-  //     res.write(`data: ${JSON.stringify([{ hello: 3 }, { hi: 4 }])}\n\n`);
-  //   }, 3000);
-  // }
-  //res.send({ msg: "in new order" });
+  res.write(``);
 };
 
 module.exports = {
