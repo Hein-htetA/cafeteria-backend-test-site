@@ -36,9 +36,6 @@ const deleteSingleOrder = async (req, res) => {
 };
 
 const watchNewOrder = async (req, res) => {
-  // Order.watch().on("change", (data) => console.log(data));
-  // console.log("watch new order");
-  // const orders = Order.insertMany(orderData);
   const { restaurant } = req.params;
   // console.log("rest name", restaurant);
   res.set({
@@ -54,6 +51,8 @@ const watchNewOrder = async (req, res) => {
       res.write(`data: ${JSON.stringify(order)}\nid:${order._id}\n\n`);
     }
   });
+
+  res.write(`data: connection open\n\n`);
 
   // if (restaurant === "hi") {
   //   setInterval(() => {
