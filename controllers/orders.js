@@ -12,9 +12,10 @@ const getByRestaurantName = async (req, res) => {
 
 const addNewOrder = async (req, res) => {
   const newOrder = await Order.create(req.body);
+  console.log("new order", newOrder);
   const { restaurantName, order } = newOrder;
   newOrderRx.next(newOrder);
-  res.send({ restaurantName, order, msg: "success" });
+  res.status(201).json({ restaurantName, order, msg: "success" });
 };
 
 const editSingleOrder = async (req, res) => {
@@ -29,7 +30,7 @@ const editSingleOrder = async (req, res) => {
 
 const deleteSingleOrder = async (req, res) => {
   // console.log("req body", req.body);
-  const { orderId } = req.body;
+  const { orderId } = req.params;
   const deletedOrder = await Order.findOneAndDelete({ _id: orderId });
   // console.log(deletedOrder);
   res.send({ msg: "deleted successfully" });
