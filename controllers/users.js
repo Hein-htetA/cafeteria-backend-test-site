@@ -3,76 +3,6 @@ const { randomUUID } = require("crypto");
 const s3Client = require("../db/awsClient");
 const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
-const registerUser = async (req, res) => {
-  const { name, phone, password, address, email, extraPhone, profileImage } =
-    req.body;
-
-  let imageUrl = "";
-  let imageId = "";
-  let user = {};
-
-  if (profileImage) {
-    const format = profileImage.substring(
-      profileImage.indexOf("data:") + 5,
-      profileImage.indexOf(";base64")
-    );
-    const base64String = profileImage.replace(/^data:image\/\w+;base64,/, "");
-
-    const buff = Buffer.from(base64String, "base64");
-
-    imageId = randomUUID();
-    imageUrl = `https://ytu-cafeteria-users.s3.ap-southeast-1.amazonaws.com/${imageId}`;
-
-    const params = {
-      Bucket: process.env.AWS_USER_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
-      Key: imageId, // The name of the object. For example, 'sample_upload.txt'.
-      Body: buff,
-      ContentEncoding: "base64",
-      ContentType: format,
-    };
-
-    user = await User.create({
-      name,
-      phone,
-      password,
-      address,
-      email,
-      extraPhone,
-      profilePhotoUrl: imageUrl,
-      profilePhotoId: imageId,
-    });
-
-    const results = await s3Client.send(new PutObjectCommand(params));
-  } else {
-    user = await User.create({
-      name,
-      phone,
-      password,
-      address,
-      email,
-      extraPhone,
-      profilePhotoUrl: imageUrl,
-      profilePhotoId: imageId,
-    });
-  }
-
-  const { _id, profilePhotoUrl, profilePhotoId } = user;
-
-  res.status(201).json({
-    user: {
-      _id,
-      name,
-      phone,
-      address,
-      email,
-      extraPhone,
-      profilePhotoUrl,
-      profilePhotoId,
-    },
-    msg: "register success",
-  });
-};
-
 const getUser = async (req, res) => {
   res.send("get user");
 };
@@ -89,8 +19,6 @@ const updateUser = async (req, res) => {
     profilePhotoId,
     profileImage,
   } = req.body;
-
-  console.log(req.body);
 
   let updatedUser = {};
 
@@ -130,7 +58,7 @@ const updateUser = async (req, res) => {
         returnDocument: "after",
         runValidators: true,
       }
-    );
+    ).select({ password: 0 });
 
     const putResult = await s3Client.send(
       new PutObjectCommand(putObjectParams)
@@ -146,19 +74,18 @@ const updateUser = async (req, res) => {
         new DeleteObjectCommand(deleteObjectParams)
       );
     }
-  } else if (!profilePhotoUrl) {
+  } else if (!profilePhotoUrl && profilePhotoId) {
     //Remove profile photo case
-    console.log("else if ran");
-    if (profilePhotoId) {
-      const deleteObjectParams = {
-        Bucket: process.env.AWS_USER_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
-        Key: profilePhotoId, // The name of the object. For example, 'sample_upload.txt'.,
-      };
+    // console.log("else if ran");
 
-      const deleteResult = await s3Client.send(
-        new DeleteObjectCommand(deleteObjectParams)
-      );
-    }
+    const deleteObjectParams = {
+      Bucket: process.env.AWS_USER_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
+      Key: profilePhotoId, // The name of the object. For example, 'sample_upload.txt'.,
+    };
+
+    const deleteResult = await s3Client.send(
+      new DeleteObjectCommand(deleteObjectParams)
+    );
     updatedUser = await User.findOneAndUpdate(
       { _id: _id },
       {
@@ -174,7 +101,7 @@ const updateUser = async (req, res) => {
         returnDocument: "after",
         runValidators: true,
       }
-    );
+    ).select({ password: 0 });
   } else {
     updatedUser = await User.findOneAndUpdate(
       { _id: _id },
@@ -189,37 +116,16 @@ const updateUser = async (req, res) => {
         returnDocument: "after",
         runValidators: true,
       }
-    );
+    ).select({ password: 0 });
   }
 
-  ({
-    _id,
-    name,
-    phone,
-    address,
-    email,
-    extraPhone,
-    profilePhotoUrl,
-    profilePhotoId,
-  } = updatedUser);
-
   res.status(200).json({
-    updatedUser: {
-      _id,
-      name,
-      phone,
-      address,
-      email,
-      extraPhone,
-      profilePhotoUrl,
-      profilePhotoId,
-    },
+    updatedUser,
     msg: "updated successfully",
   });
 };
 
 module.exports = {
-  registerUser,
-  getUser,
   updateUser,
+  getUser,
 };

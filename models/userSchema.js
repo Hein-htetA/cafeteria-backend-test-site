@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
     extraPhone: String,
     profilePhotoUrl: String,
     profilePhotoId: String,
+    restaurantId: mongoose.ObjectId,
   },
   { timestamps: true }
 );
@@ -29,5 +30,10 @@ userSchema.pre("save", async function () {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+userSchema.methods.comparePassword = async function (canditatePassword) {
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
+};
 
 module.exports = mongoose.model("User", userSchema);

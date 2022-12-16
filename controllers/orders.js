@@ -3,19 +3,18 @@ const { Subject } = require("rxjs");
 
 const newOrderRx = new Subject();
 
-const getByRestaurantName = async (req, res) => {
-  const { restaurant } = req.params;
-  const orders = await Order.find({ restaurantName: restaurant });
+const getByRestaurantId = async (req, res) => {
+  const { restaurantId } = req.params;
+  const orders = await Order.find({ restaurantId });
 
   res.send({ data: orders, msg: "success" });
 };
 
 const addNewOrder = async (req, res) => {
   const newOrder = await Order.create(req.body);
-  console.log("new order", newOrder);
-  const { restaurantName, order } = newOrder;
+  const { order } = newOrder;
   newOrderRx.next(newOrder);
-  res.status(201).json({ restaurantName, order, msg: "success" });
+  res.status(201).json({ order, msg: "success" });
 };
 
 const editSingleOrder = async (req, res) => {
@@ -37,17 +36,15 @@ const deleteSingleOrder = async (req, res) => {
 };
 
 const watchNewOrder = async (req, res) => {
-  const { restaurant } = req.params;
-  // console.log("rest name", restaurant);
+  const { restaurantId } = req.params;
   res.set({
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
   });
-  // console.log(`${restaurant} connected to sse`);
 
   newOrderRx.subscribe((order) => {
-    // console.log(order);
-    if (order.restaurantName === restaurant) {
+    if (order.restaurantId.toString() === restaurantId) {
+      //order restaurant Id is new ObjectId("lorem ispen")
       // console.log("in if subcribe");
       res.write(`data: ${JSON.stringify(order)}\nid:${order._id}\n\n`);
     }
@@ -57,7 +54,7 @@ const watchNewOrder = async (req, res) => {
 };
 
 module.exports = {
-  getByRestaurantName,
+  getByRestaurantId,
   addNewOrder,
   watchNewOrder,
   editSingleOrder,

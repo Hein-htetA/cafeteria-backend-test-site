@@ -5,9 +5,11 @@ const connectDB = require("./db/connect");
 const cors = require("cors");
 
 //Routers
+const restaurantRouter = require("./routes/restaurants");
 const ordersRouter = require("./routes/orders");
 const menuRouter = require("./routes/menu");
 const userRouter = require("./routes/users");
+const authRouter = require("./routes/auth");
 
 const app = express();
 
@@ -21,9 +23,11 @@ app.get("/", (req, res) => {
   res.send("YTU-Cafeteria");
 });
 
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/orders", ordersRouter);
 app.use("/api/v1/menu", menuRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/restaurants", restaurantRouter);
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 5000;

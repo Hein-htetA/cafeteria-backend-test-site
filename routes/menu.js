@@ -8,12 +8,10 @@ const {
 
 const router = express.Router();
 
-router
-  .route("/:restaurantName")
-  .get(getAllMenu)
-  .post(addNewMenu)
-  .patch(updateMenu);
+router.route("/").post(addNewMenu).patch(updateMenu);
 
-router.route("/:restaurantName/:menuId").delete(deleteMenu);
+router.route("/:restaurantId").get(getAllMenu);
+
+router.route("/:restaurantId/:menuId").delete(deleteMenu);
 
 module.exports = router;

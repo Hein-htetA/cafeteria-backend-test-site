@@ -9,8 +9,8 @@ const menuSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Price is required"],
   },
-  imageUrl: String,
-  imageId: String,
+  menuPhotoUrl: String,
+  menuPhotoId: String,
   category: {
     type: String,
     required: [true, "Category is required"],
@@ -19,12 +19,11 @@ const menuSchema = new mongoose.Schema({
       message: "{VALUE} is not supported in category",
     },
   },
-  restaurantName: {
-    type: String,
+  restaurantId: {
+    type: mongoose.ObjectId,
     required: [true, "Restaurant Name is required"],
   },
   description: String,
-  image: String,
 });
 
 module.exports = mongoose.model("Menu", menuSchema);

@@ -15,13 +15,19 @@ const singleOrderSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema(
   {
-    restaurantName: {
-      type: String,
-      required: [true, "Restaurant name must be provided"],
-      trim: true,
+    restaurantId: {
+      type: mongoose.ObjectId,
+      required: [true, "Restaurant id must be provided"],
     },
+
     order: [singleOrderSchema],
+
     message: String,
+
+    customerId: {
+      type: mongoose.ObjectId,
+      required: [true, "Customer id must be provided"],
+    },
 
     customerName: {
       type: String,
@@ -35,14 +41,7 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: [true, "Phone number must be provided"],
     },
-    status: {
-      type: String,
-      enum: {
-        values: ["accepted", "received", "onDelivery"],
-        message: "{VALUE} is not supported",
-      },
-      default: "received",
-    },
+
     paymentStatus: {
       type: Boolean,
       default: false,

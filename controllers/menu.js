@@ -1,66 +1,53 @@
 const Menu = require("../models/menuSchema");
-const fs = require("fs");
 const path = require("path");
 const s3Client = require("../db/awsClient");
 const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { randomUUID } = require("crypto");
 
 const addNewMenu = async (req, res) => {
-  const { name, price, description, image, restaurantName, category } =
+  const { name, price, description, menuImage, restaurantId, category } =
     req.body;
 
-  let addedMenu = {};
+  let menuPhotoId = "";
+  let menuPhotoUrl = "";
 
-  if (image) {
-    const format = image.substring(
-      image.indexOf("data:") + 5,
-      image.indexOf(";base64")
+  if (menuImage) {
+    const format = menuImage.substring(
+      menuImage.indexOf("data:") + 5,
+      menuImage.indexOf(";base64")
     );
-    const base64String = image.replace(/^data:image\/\w+;base64,/, "");
+    const base64String = menuImage.replace(/^data:image\/\w+;base64,/, "");
 
     const buff = Buffer.from(base64String, "base64");
 
-    const imageId = randomUUID();
-    const imageUrl = `https://ytu-cafeteria-menu.s3.ap-southeast-1.amazonaws.com/${imageId}`;
+    menuPhotoId = randomUUID();
+    menuPhotoUrl = `https://ytu-cafeteria-menu.s3.ap-southeast-1.amazonaws.com/${menuPhotoId}`;
 
     const params = {
       Bucket: process.env.AWS_MENU_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
-      Key: imageId, // The name of the object. For example, 'sample_upload.txt'.
+      Key: menuPhotoId, // The name of the object. For example, 'sample_upload.txt'.
       Body: buff,
       ContentEncoding: "base64",
       ContentType: format,
     };
 
     const results = await s3Client.send(new PutObjectCommand(params));
-
-    addedMenu = await Menu.create({
-      name,
-      price,
-      description,
-      imageId,
-      imageUrl,
-      restaurantName,
-      category,
-    });
-  } else {
-    addedMenu = await Menu.create({
-      name,
-      price,
-      description,
-      imageId: "",
-      imageUrl:
-        "https://ytu-cafeteria-menu.s3.ap-southeast-1.amazonaws.com/Image-Coming-Soon-Placeholder.png",
-      restaurantName,
-      category,
-    });
   }
-
+  const addedMenu = await Menu.create({
+    name,
+    price,
+    description,
+    menuPhotoId,
+    menuPhotoUrl,
+    restaurantId,
+    category,
+  });
   res.status(201).json({ addedMenu, msg: "Added Successfully" });
 };
 
 const getAllMenu = async (req, res) => {
-  const { restaurantName } = req.params;
-  const menuData = await Menu.find({ restaurantName });
+  const { restaurantId } = req.params;
+  const menuData = await Menu.find({ restaurantId });
   res
     .status(200)
     .json({ data: menuData, msg: "success", nbHits: menuData.length });
@@ -69,10 +56,11 @@ const getAllMenu = async (req, res) => {
 const deleteMenu = async (req, res) => {
   const { menuId } = req.params;
   const deletedMenu = await Menu.findByIdAndDelete({ _id: menuId });
-  if (deletedMenu.imageId) {
+  console.log(deletedMenu);
+  if (deletedMenu.menuPhotoId) {
     const deleteObjectParams = {
       Bucket: process.env.AWS_MENU_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
-      Key: deletedMenu.imageId, // The name of the object. For example, 'sample_upload.txt'.,
+      Key: deletedMenu.menuPhotoId, // The name of the object. For example, 'sample_upload.txt'.,
     };
 
     const deleteResult = await s3Client.send(
@@ -84,52 +72,67 @@ const deleteMenu = async (req, res) => {
 };
 
 const updateMenu = async (req, res) => {
-  const { _id, name, price, description, image, imageId, imageUrl } = req.body;
+  const {
+    _id,
+    name,
+    price,
+    description,
+    menuImage,
+    menuPhotoId,
+    menuPhotoUrl,
+  } = req.body;
+
   let editedMenu = {};
 
-  if (image) {
-    const format = image.substring(
-      image.indexOf("data:") + 5,
-      image.indexOf(";base64")
+  if (menuImage) {
+    const format = menuImage.substring(
+      menuImage.indexOf("data:") + 5,
+      menuImage.indexOf(";base64")
     );
-    const base64String = image.replace(/^data:image\/\w+;base64,/, "");
+    const base64String = menuImage.replace(/^data:image\/\w+;base64,/, "");
 
     const buff = Buffer.from(base64String, "base64");
 
-    const newImageId = randomUUID();
-    const newImageUrl = `https://ytu-cafeteria-menu.s3.ap-southeast-1.amazonaws.com/${newImageId}`;
+    const newMenuPhotoId = randomUUID();
+    const newMenuPhotoUrl = `https://ytu-cafeteria-menu.s3.ap-southeast-1.amazonaws.com/${newMenuPhotoId}`;
 
     const putObjectParams = {
       Bucket: process.env.AWS_MENU_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
-      Key: newImageId, // The name of the object. For example, 'sample_upload.txt'.
+      Key: newMenuPhotoId, // The name of the object. For example, 'sample_upload.txt'.
       Body: buff,
       ContentEncoding: "base64",
       ContentType: format,
     };
 
+    editedMenu = await Menu.findOneAndUpdate(
+      { _id: _id },
+      {
+        name,
+        price,
+        description,
+        menuPhotoId: newMenuPhotoId,
+        menuPhotoUrl: newMenuPhotoUrl,
+      },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      }
+    );
+
     const putResult = await s3Client.send(
       new PutObjectCommand(putObjectParams)
     );
 
-    if (imageId) {
+    if (menuPhotoId) {
       const deleteObjectParams = {
         Bucket: process.env.AWS_MENU_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
-        Key: imageId, // The name of the object. For example, 'sample_upload.txt'.,
+        Key: menuPhotoId, // The name of the object. For example, 'sample_upload.txt'.,
       };
 
       const deleteResult = await s3Client.send(
         new DeleteObjectCommand(deleteObjectParams)
       );
     }
-
-    editedMenu = await Menu.findOneAndUpdate(
-      { _id: _id },
-      { name, price, imageUrl: newImageUrl, imageId: newImageId, description },
-      {
-        returnDocument: "after",
-        runValidators: true,
-      }
-    );
   } else {
     editedMenu = await Menu.findOneAndUpdate(
       { _id: _id },
