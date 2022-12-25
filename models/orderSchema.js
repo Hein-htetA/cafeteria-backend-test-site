@@ -4,7 +4,6 @@ const singleOrderSchema = new mongoose.Schema({
   foodName: {
     type: String,
     required: [true, "Food name must be provided"],
-    lowercase: true,
   },
 
   foodCount: {
@@ -13,11 +12,36 @@ const singleOrderSchema = new mongoose.Schema({
   },
 });
 
+const additionalInfoSchema = new mongoose.Schema({
+  name: {
+    type: String,
+  },
+  number: {
+    type: String,
+  },
+});
+
+const paymentMethodSchema = new mongoose.Schema({
+  value: {
+    type: String,
+    enum: {
+      values: ["Cash", "KBZPay", "WavePay"],
+      message: "{VALUE} is not supported",
+    },
+  },
+  additionalInfo: additionalInfoSchema,
+});
+
 const orderSchema = new mongoose.Schema(
   {
     restaurantId: {
       type: mongoose.ObjectId,
       required: [true, "Restaurant id must be provided"],
+    },
+
+    menuId: {
+      type: mongoose.ObjectId,
+      required: [true, "Menu id must be provided"],
     },
 
     order: [singleOrderSchema],
@@ -58,15 +82,8 @@ const orderSchema = new mongoose.Schema(
       },
       default: "newOrder",
     },
-    paymentMethod: {
-      method: {
-        type: String,
-        required: [true, "Payment method is required"],
-      },
-      additionalInfo: {
-        type: String,
-      },
-    },
+
+    paymentMethod: paymentMethodSchema,
     expireAt: {
       type: Date,
       expires: 1100,

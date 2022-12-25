@@ -48,6 +48,12 @@ const addNewMenu = async (req, res) => {
 const getAllMenu = async (req, res) => {
   const { restaurantId } = req.params;
   const menuData = await Menu.find({ restaurantId });
+
+  // setTimeout(() => {
+  //   res
+  //     .status(200)
+  //     .json({ data: menuData, msg: "success", nbHits: menuData.length });
+  // }, 200000);
   res
     .status(200)
     .json({ data: menuData, msg: "success", nbHits: menuData.length });

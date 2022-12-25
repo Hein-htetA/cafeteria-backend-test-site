@@ -55,6 +55,8 @@ const restaurantSchema = new mongoose.Schema({
     type: mongoose.ObjectId,
     required: [true, "Owner Id is required"],
   },
+  restaurantPhotoUrl: String,
+  restaurantPhotoId: String,
 });
 
 module.exports = mongoose.model("Restaurant", restaurantSchema);
