@@ -40,11 +40,9 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
   },
   establishedIn: String,
-  delivery: {
-    type: String,
-    enum: {
-      values: ["Available", "Unavailable (Pick-up Only)"],
-    },
+  deliveryService: {
+    type: Boolean,
+    default: false,
   },
   paymentMethods: [paymentMethodSchema],
   priority: {

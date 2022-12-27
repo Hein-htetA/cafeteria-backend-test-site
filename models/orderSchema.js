@@ -1,12 +1,17 @@
 const mongoose = require("mongoose");
 
 const singleOrderSchema = new mongoose.Schema({
-  foodName: {
+  menuId: {
+    type: mongoose.ObjectId,
+    required: [true, "Menu id must be provided"],
+  },
+
+  name: {
     type: String,
     required: [true, "Food name must be provided"],
   },
 
-  foodCount: {
+  count: {
     type: Number,
     required: [true, "Food count must be provided"],
   },
@@ -39,11 +44,6 @@ const orderSchema = new mongoose.Schema(
       required: [true, "Restaurant id must be provided"],
     },
 
-    menuId: {
-      type: mongoose.ObjectId,
-      required: [true, "Menu id must be provided"],
-    },
-
     order: [singleOrderSchema],
 
     message: String,
@@ -57,10 +57,16 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: [true, "Customer name must be provided"],
     },
+
     address: {
       type: String,
-      required: [true, "Address must be provided"],
     },
+
+    requestDelivery: {
+      type: Boolean,
+      required: [true, "Request Delivery Info must be provided"],
+    },
+
     phoneNumber: {
       type: String,
       required: [true, "Phone number must be provided"],
