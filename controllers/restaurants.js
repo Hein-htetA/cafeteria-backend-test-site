@@ -215,7 +215,6 @@ const getRestaurantById = async (req, res) => {
 
 const getRestaurantByPage = async (req, res) => {
   const { page } = req.query;
-  console.log(page);
 
   const restaurants = await Restaurant.find()
     .sort("priority _id")
