@@ -8,10 +8,12 @@ const {
   getRestaurantByPage,
 } = require("../controllers/restaurants");
 
+const authenticationMiddleware = require("../middleware/authenticationMiddleware");
+
 router
   .route("/")
-  .post(registerRestaurant)
-  .patch(updateRestaurant)
+  .post(authenticationMiddleware, registerRestaurant)
+  .patch(authenticationMiddleware, updateRestaurant)
   .get(getRestaurantByPage);
 router.route("/:restaurantId").get(getRestaurantById);
 

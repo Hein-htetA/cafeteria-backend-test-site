@@ -26,10 +26,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/orders", ordersRouter);
+app.use("/api/v1/restaurants", restaurantRouter);
 app.use(authenticationMiddleware);
 app.use("/api/v1/menu", menuRouter);
-
-app.use("/api/v1/restaurants", restaurantRouter);
 
 app.use("/api/v1/users", userRouter);
 
