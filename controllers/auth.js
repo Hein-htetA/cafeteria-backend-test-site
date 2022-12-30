@@ -4,6 +4,7 @@ const { UnauthenticatedError } = require("../errors");
 const { randomUUID } = require("crypto");
 const s3Client = require("../db/awsClient");
 const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
   const { name, phone, password, address, email, extraPhone, profileImage } =
@@ -48,16 +49,19 @@ const registerUser = async (req, res) => {
 
   user.password = undefined;
 
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
+  });
+
   res.status(201).json({
     user,
+    token,
     msg: "register success",
   });
 };
 
 const login = async (req, res) => {
   const { phone, password } = req.body;
-  console.log(phone);
-  console.log(password);
 
   let user = await User.findOne({ phone });
   if (!user) {
@@ -70,11 +74,16 @@ const login = async (req, res) => {
 
   user.password = undefined; //removing password field
 
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
+  });
+
   // compare password
   // const token = user.createJWT();
 
   res.status(StatusCodes.OK).json({
     user,
+    token,
     msg: "Logged In Successfully",
   });
 };

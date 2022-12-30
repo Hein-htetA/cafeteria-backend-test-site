@@ -90,7 +90,6 @@ const updateRestaurant = async (req, res) => {
   let updatedRestaurant = {};
 
   if (restaurantImage) {
-    console.log("if ran");
     const format = restaurantImage.substring(
       restaurantImage.indexOf("data:") + 5,
       restaurantImage.indexOf(";base64")
@@ -221,12 +220,12 @@ const getRestaurantByPage = async (req, res) => {
     //.skip((page - 1) * 3 < 0 ? 0 : (page - 1) * 3)
     .skip((page - 1) * 3)
     .limit(3);
-  setTimeout(() => {
-    res.status(200).json({ restaurants, nbHits: restaurants.length });
-  }, 2000);
+  // setTimeout(() => {
+  //   res.status(200).json({ restaurants, nbHits: restaurants.length });
+  // }, 5000);
   // console.log("restarants", restaurants);
 
-  //res.status(200).json({ restaurants, nbHits: restaurants.length });
+  res.status(200).json({ restaurants, nbHits: restaurants.length });
 };
 
 module.exports = {

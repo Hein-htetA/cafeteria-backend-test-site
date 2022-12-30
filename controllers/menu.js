@@ -73,7 +73,6 @@ const deleteMenu = async (req, res) => {
       new DeleteObjectCommand(deleteObjectParams)
     );
   }
-  console.log(deletedMenu);
   res.status(202).json({ msg: "deleted successfully" });
 };
 

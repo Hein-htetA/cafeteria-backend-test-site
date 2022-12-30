@@ -23,7 +23,6 @@ const updateUser = async (req, res) => {
   let updatedUser = {};
 
   if (profileImage) {
-    console.log("if ran");
     const format = profileImage.substring(
       profileImage.indexOf("data:") + 5,
       profileImage.indexOf(";base64")
