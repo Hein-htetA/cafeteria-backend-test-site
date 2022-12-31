@@ -6,7 +6,10 @@ const updateOrderRx = new Subject();
 
 const getByRestaurantId = async (req, res) => {
   const { restaurantId } = req.params;
-  const orders = await Order.find({ restaurantId });
+  const orders = await Order.find({
+    restaurantId,
+    createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) }, //record only for last 24hrs
+  }).sort({ createdAt: -1 });
 
   res.send({ data: orders, msg: "success" });
 };

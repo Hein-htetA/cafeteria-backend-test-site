@@ -101,12 +101,12 @@ const updateRestaurant = async (req, res) => {
 
     const buff = Buffer.from(base64String, "base64");
 
-    const restaurantPhotoId = randomUUID();
-    const restaurantPhotoUrl = `https://ytu-cafeteria-users.s3.ap-southeast-1.amazonaws.com/${restaurantPhotoId}`;
+    const newRestaurantPhotoId = randomUUID();
+    const newRestaurantPhotoUrl = `https://ytu-cafeteria-restaurants.s3.ap-southeast-1.amazonaws.com/${newRestaurantPhotoId}`;
 
     const putObjectParams = {
       Bucket: process.env.AWS_RESTAURANT_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
-      Key: restaurantPhotoId, // The name of the object. For example, 'sample_upload.txt'.
+      Key: newRestaurantPhotoId, // The name of the object. For example, 'sample_upload.txt'.
       Body: buff,
       ContentEncoding: "base64",
       ContentType: format,
@@ -123,8 +123,8 @@ const updateRestaurant = async (req, res) => {
         establishedIn,
         deliveryService,
         paymentMethods,
-        restaurantPhotoUrl,
-        restaurantPhotoId,
+        restaurantPhotoUrl: newRestaurantPhotoUrl,
+        restaurantPhotoId: newRestaurantPhotoId,
       },
       {
         returnDocument: "after",
@@ -148,7 +148,6 @@ const updateRestaurant = async (req, res) => {
     }
   } else if (!restaurantPhotoUrl && restaurantPhotoId) {
     //Remove profile photo case
-    // console.log("else if ran");
 
     const deleteObjectParams = {
       Bucket: process.env.AWS_RESTAURANT_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.

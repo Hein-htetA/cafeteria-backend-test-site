@@ -62,7 +62,6 @@ const getAllMenu = async (req, res) => {
 const deleteMenu = async (req, res) => {
   const { menuId } = req.params;
   const deletedMenu = await Menu.findByIdAndDelete({ _id: menuId });
-  console.log(deletedMenu);
   if (deletedMenu.menuPhotoId) {
     const deleteObjectParams = {
       Bucket: process.env.AWS_MENU_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
