@@ -75,14 +75,17 @@ const watchUpdateOrder = async (req, res) => {
   });
 
   updateOrderRx.subscribe((order) => {
-    const { _id, orderState, paymentStatus } = order;
+    const { _id, orderState, paymentStatus, updatedAt } = order;
     if (order.customerId.toString() === customerId) {
       //order restaurant Id is new ObjectId("lorem ispen")
       // console.log("in if subcribe");
       res.write(
-        `data: ${JSON.stringify({ _id, orderState, paymentStatus })}\nid:${
-          order._id
-        }\n\n`
+        `data: ${JSON.stringify({
+          _id,
+          orderState,
+          paymentStatus,
+          updatedAt,
+        })}\nid:${_id}\n\n`
       );
     }
   });

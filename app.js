@@ -25,10 +25,13 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
+//partially protected routes
+
 app.use("/api/v1/orders", ordersRouter);
 app.use("/api/v1/restaurants", restaurantRouter);
-app.use(authenticationMiddleware);
 app.use("/api/v1/menu", menuRouter);
+//
+app.use(authenticationMiddleware);
 
 app.use("/api/v1/users", userRouter);
 

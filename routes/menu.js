@@ -6,12 +6,19 @@ const {
   deleteMenu,
 } = require("../controllers/menu");
 
+const authenticationMiddleware = require("../middleware/authenticationMiddleware");
+
 const router = express.Router();
 
-router.route("/").post(addNewMenu).patch(updateMenu);
+router
+  .route("/")
+  .post(authenticationMiddleware, addNewMenu)
+  .patch(authenticationMiddleware, updateMenu);
 
 router.route("/:restaurantId").get(getAllMenu);
 
-router.route("/:restaurantId/:menuId").delete(deleteMenu);
+router
+  .route("/:restaurantId/:menuId")
+  .delete(authenticationMiddleware, deleteMenu);
 
 module.exports = router;
