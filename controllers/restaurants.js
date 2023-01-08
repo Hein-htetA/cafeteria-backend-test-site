@@ -33,7 +33,7 @@ const registerRestaurant = async (req, res) => {
     const buff = Buffer.from(base64String, "base64");
 
     restaurantPhotoId = randomUUID();
-    restaurantPhotoUrl = `https://ytu-cafeteria-restaurants.s3.ap-southeast-1.amazonaws.com/${restaurantPhotoId}`;
+    restaurantPhotoUrl = `https://${process.env.AWS_RESTAURANT_BUCKET}.s3.ap-southeast-1.amazonaws.com/${restaurantPhotoId}`;
 
     const params = {
       Bucket: process.env.AWS_RESTAURANT_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
@@ -102,7 +102,7 @@ const updateRestaurant = async (req, res) => {
     const buff = Buffer.from(base64String, "base64");
 
     const newRestaurantPhotoId = randomUUID();
-    const newRestaurantPhotoUrl = `https://ytu-cafeteria-restaurants.s3.ap-southeast-1.amazonaws.com/${newRestaurantPhotoId}`;
+    const newRestaurantPhotoUrl = `https://${process.env.AWS_RESTAURANT_BUCKET}.s3.ap-southeast-1.amazonaws.com/${newRestaurantPhotoId}`;
 
     const putObjectParams = {
       Bucket: process.env.AWS_RESTAURANT_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.

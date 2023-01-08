@@ -32,7 +32,7 @@ const updateUser = async (req, res) => {
     const buff = Buffer.from(base64String, "base64");
 
     const newImageId = randomUUID();
-    const newImageUrl = `https://ytu-cafeteria-users.s3.ap-southeast-1.amazonaws.com/${newImageId}`;
+    const newImageUrl = `https://${process.env.AWS_USER_BUCKET}.s3.ap-southeast-1.amazonaws.com/${newImageId}`;
 
     const putObjectParams = {
       Bucket: process.env.AWS_USER_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.

@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
     const buff = Buffer.from(base64String, "base64");
 
     profilePhotoId = randomUUID();
-    profilePhotoUrl = `https://ytu-cafeteria-users.s3.ap-southeast-1.amazonaws.com/${profilePhotoId}`;
+    profilePhotoUrl = `https://${process.env.AWS_USER_BUCKET}.s3.ap-southeast-1.amazonaws.com/${profilePhotoId}`;
 
     const params = {
       Bucket: process.env.AWS_USER_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.

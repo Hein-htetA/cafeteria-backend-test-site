@@ -21,7 +21,7 @@ const addNewMenu = async (req, res) => {
     const buff = Buffer.from(base64String, "base64");
 
     menuPhotoId = randomUUID();
-    menuPhotoUrl = `https://ytu-cafeteria-menu.s3.ap-southeast-1.amazonaws.com/${menuPhotoId}`;
+    menuPhotoUrl = `https://${process.env.AWS_MENU_BUCKET}.s3.ap-southeast-1.amazonaws.com/${menuPhotoId}`;
 
     const params = {
       Bucket: process.env.AWS_MENU_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
@@ -98,7 +98,7 @@ const updateMenu = async (req, res) => {
     const buff = Buffer.from(base64String, "base64");
 
     const newMenuPhotoId = randomUUID();
-    const newMenuPhotoUrl = `https://ytu-cafeteria-menu.s3.ap-southeast-1.amazonaws.com/${newMenuPhotoId}`;
+    const newMenuPhotoUrl = `https://${process.env.AWS_MENU_BUCKET}.s3.ap-southeast-1.amazonaws.com/${newMenuPhotoId}`;
 
     const putObjectParams = {
       Bucket: process.env.AWS_MENU_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
