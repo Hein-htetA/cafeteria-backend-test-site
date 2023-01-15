@@ -67,9 +67,7 @@ const registerRestaurant = async (req, res) => {
     }
   ).select({ password: 0 });
 
-  res
-    .status(201)
-    .json({ restaurant, user: userUpdate, message: "Registered Successfully" });
+  res.status(201).json({ restaurant, message: "Registered Successfully" });
 };
 
 const updateRestaurant = async (req, res) => {
@@ -196,6 +194,13 @@ const updateRestaurant = async (req, res) => {
     );
   }
 
+  // setTimeout(() => {
+  //   res.status(200).json({
+  //     updatedRestaurant,
+  //     msg: "updated successfully",
+  //   });
+  // }, 3000);
+
   res.status(200).json({
     updatedRestaurant,
     msg: "updated successfully",
@@ -205,9 +210,11 @@ const updateRestaurant = async (req, res) => {
 const getRestaurantById = async (req, res) => {
   const { restaurantId } = req.params;
   const restaurant = await Restaurant.findOne({ _id: restaurantId });
+
   // setTimeout(() => {
   //   res.status(200).json({ restaurant, msg: "fetch success" });
   // }, 10000);
+
   res.status(200).json({ restaurant, msg: "fetch success" });
 };
 
@@ -216,13 +223,12 @@ const getRestaurantByPage = async (req, res) => {
 
   const restaurants = await Restaurant.find()
     .sort("priority _id")
-    //.skip((page - 1) * 3 < 0 ? 0 : (page - 1) * 3)
     .skip((page - 1) * 3)
     .limit(3);
+
   // setTimeout(() => {
   //   res.status(200).json({ restaurants, nbHits: restaurants.length });
-  // }, 5000);
-  // console.log("restarants", restaurants);
+  // }, 2000);
 
   res.status(200).json({ restaurants, nbHits: restaurants.length });
 };

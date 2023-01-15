@@ -42,6 +42,11 @@ const addNewMenu = async (req, res) => {
     restaurantId,
     category,
   });
+
+  // setTimeout(() => {
+  //   res.status(201).json({ addedMenu, msg: "Added Successfully" });
+  // }, 5000);
+
   res.status(201).json({ addedMenu, msg: "Added Successfully" });
 };
 
@@ -53,7 +58,8 @@ const getAllMenu = async (req, res) => {
   //   res
   //     .status(200)
   //     .json({ data: menuData, msg: "success", nbHits: menuData.length });
-  // }, 200000);
+  // }, 2000);
+
   res
     .status(200)
     .json({ data: menuData, msg: "success", nbHits: menuData.length });
@@ -72,7 +78,7 @@ const deleteMenu = async (req, res) => {
       new DeleteObjectCommand(deleteObjectParams)
     );
   }
-  res.status(202).json({ msg: "deleted successfully" });
+  res.status(200).json({ msg: "deleted successfully" });
 };
 
 const updateMenu = async (req, res) => {
@@ -147,6 +153,10 @@ const updateMenu = async (req, res) => {
       }
     );
   }
+
+  // setTimeout(() => {
+  //   res.status(200).json({ editedMenu, msg: "updated successfully" });
+  // }, 5000);
 
   res.status(200).json({ editedMenu, msg: "updated successfully" });
 };

@@ -11,7 +11,11 @@ const getByRestaurantId = async (req, res) => {
     createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) }, //record only for last 24hrs
   }).sort({ createdAt: -1 });
 
-  res.send({ data: orders, msg: "success" });
+  // setTimeout(() => {
+  //   res.send({ data: orders, msg: "success" });
+  // }, 1000);
+
+  res.status(200).json({ data: orders, msg: "success" });
 };
 
 const getByCustomerId = async (req, res) => {
@@ -32,6 +36,7 @@ const addNewOrder = async (req, res) => {
 };
 
 const editSingleOrder = async (req, res) => {
+  //throw new Error();
   const { orderId, ...body } = req.body;
   const editedOrder = await Order.findByIdAndUpdate({ _id: orderId }, body, {
     returnDocument: "after",
@@ -39,14 +44,15 @@ const editSingleOrder = async (req, res) => {
   });
   updateOrderRx.next(editedOrder);
   const { updatedAt } = editedOrder;
+  // setTimeout(() => {
+  //   res.send({ msg: "updated successfully", updatedAt });
+  // }, 3000);
   res.send({ msg: "updated successfully", updatedAt });
 };
 
 const deleteSingleOrder = async (req, res) => {
-  // console.log("req body", req.body);
   const { orderId } = req.params;
   const deletedOrder = await Order.findOneAndDelete({ _id: orderId });
-  // console.log(deletedOrder);
   res.send({ msg: "deleted successfully" });
 };
 

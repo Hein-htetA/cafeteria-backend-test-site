@@ -117,6 +117,12 @@ const updateUser = async (req, res) => {
       }
     ).select({ password: 0 });
   }
+  // setTimeout(() => {
+  //   res.status(200).json({
+  //     updatedUser,
+  //     msg: "updated successfully",
+  //   });
+  // }, 8000);
 
   res.status(200).json({
     updatedUser,

@@ -48,6 +48,11 @@ const orderSchema = new mongoose.Schema(
       required: [true, "Restaurant id must be provided"],
     },
 
+    restaurantName: {
+      type: String,
+      required: [true, "Restaurant name must be provided"],
+    },
+
     menuArray: [singleOrderSchema],
 
     message: String,
