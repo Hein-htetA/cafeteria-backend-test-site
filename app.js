@@ -26,11 +26,11 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 //partially protected routes
-app.use((req, res, next) => {
-  setTimeout(() => {
-    next();
-  }, 3000);
-});
+// app.use((req, res, next) => {
+//   setTimeout(() => {
+//     next();
+//   }, 3000);
+// });
 app.use("/api/v1/orders", ordersRouter);
 app.use("/api/v1/restaurants", restaurantRouter);
 app.use("/api/v1/menu", menuRouter);
