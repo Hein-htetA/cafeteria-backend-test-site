@@ -6,6 +6,7 @@ const {
   updateRestaurant,
   getRestaurantById,
   getRestaurantByPage,
+  getRestaurantByName,
 } = require("../controllers/restaurants");
 
 const authenticationMiddleware = require("../middleware/authenticationMiddleware");
@@ -15,6 +16,7 @@ router
   .post(authenticationMiddleware, registerRestaurant)
   .patch(authenticationMiddleware, updateRestaurant)
   .get(getRestaurantByPage);
+router.route("/search").get(getRestaurantByName);
 router.route("/:restaurantId").get(getRestaurantById);
 
 module.exports = router;

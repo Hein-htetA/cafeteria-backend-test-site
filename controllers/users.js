@@ -3,8 +3,10 @@ const { randomUUID } = require("crypto");
 const s3Client = require("../db/awsClient");
 const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
-const getUser = async (req, res) => {
-  res.send("get user");
+const getUserByRestaurantId = async (req, res) => {
+  const { restaurantId } = req.params;
+  const user = await User.findOne({ restaurantId }).select({ password: 0 });
+  res.status(200).json({ user, msg: "fetched user successfully" });
 };
 
 const updateUser = async (req, res) => {
@@ -75,7 +77,6 @@ const updateUser = async (req, res) => {
     }
   } else if (!profilePhotoUrl && profilePhotoId) {
     //Remove profile photo case
-    // console.log("else if ran");
 
     const deleteObjectParams = {
       Bucket: process.env.AWS_USER_BUCKET, // The name of the bucket. For example, 'sample_bucket_101'.
@@ -132,5 +133,5 @@ const updateUser = async (req, res) => {
 
 module.exports = {
   updateUser,
-  getUser,
+  getUserByRestaurantId,
 };

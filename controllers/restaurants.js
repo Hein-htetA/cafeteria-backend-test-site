@@ -233,9 +233,30 @@ const getRestaurantByPage = async (req, res) => {
   res.status(200).json({ restaurants, nbHits: restaurants.length });
 };
 
+const getRestaurantByName = async (req, res) => {
+  const { name } = req.query;
+  const pipeline = [
+    {
+      $search: {
+        index: "autocomplete",
+        autocomplete: {
+          query: name,
+          path: "name",
+        },
+      },
+    },
+  ];
+  const restaurants = await Restaurant.aggregate(pipeline).limit(3);
+  // setTimeout(() => {
+  //   res.send({ restaurants, msg: "success", nbHits: restaurants.length });
+  // }, 3000);
+  res.send({ restaurants, msg: "success", nbHits: restaurants.length });
+};
+
 module.exports = {
   registerRestaurant,
   updateRestaurant,
   getRestaurantById,
   getRestaurantByPage,
+  getRestaurantByName,
 };
