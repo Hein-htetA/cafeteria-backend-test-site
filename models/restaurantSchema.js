@@ -24,6 +24,8 @@ const paymentMethodSchema = new mongoose.Schema({
   additionalInfo: additionalInfoSchema,
 });
 
+const pushSubscriptionSchema = new mongoose.Schema({});
+
 const restaurantSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -53,8 +55,17 @@ const restaurantSchema = new mongoose.Schema({
     type: mongoose.ObjectId,
     required: [true, "Owner Id is required"],
   },
+  status: {
+    type: String,
+    required: [true, "Restaurant Status is required"],
+    enum: {
+      values: ["open", "closed"],
+      message: "{VALUE} is not supported",
+    },
+  },
   restaurantPhotoUrl: String,
   restaurantPhotoId: String,
+  PushSubscription: {},
 });
 
 module.exports = mongoose.model("Restaurant", restaurantSchema);

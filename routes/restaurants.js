@@ -7,6 +7,7 @@ const {
   getRestaurantById,
   getRestaurantByPage,
   getRestaurantByName,
+  saveSubscriptionToRestaurant,
 } = require("../controllers/restaurants");
 
 const authenticationMiddleware = require("../middleware/authenticationMiddleware");
@@ -16,6 +17,7 @@ router
   .post(authenticationMiddleware, registerRestaurant)
   .patch(authenticationMiddleware, updateRestaurant)
   .get(getRestaurantByPage);
+router.route("/save-subscription").patch(saveSubscriptionToRestaurant);
 router.route("/search").get(getRestaurantByName);
 router.route("/:restaurantId").get(getRestaurantById);
 

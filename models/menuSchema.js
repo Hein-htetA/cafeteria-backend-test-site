@@ -23,6 +23,10 @@ const menuSchema = new mongoose.Schema({
     type: mongoose.ObjectId,
     required: [true, "Restaurant Name is required"],
   },
+  outOfStock: {
+    type: Boolean,
+    default: false,
+  },
   description: String,
 });
 

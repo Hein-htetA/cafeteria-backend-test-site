@@ -1,5 +1,14 @@
+require("dotenv").config();
 const Order = require("../models/orderSchema");
+const Restaurant = require("../models/restaurantSchema");
 const { Subject } = require("rxjs");
+const webpush = require("web-push");
+
+webpush.setVapidDetails(
+  "mailto:heinha123456@gmail.com",
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
 
 const newOrderRx = new Subject();
 const updateOrderRx = new Subject();
@@ -30,6 +39,17 @@ const getByCustomerId = async (req, res) => {
 };
 
 const addNewOrder = async (req, res) => {
+  const { restaurantId } = req.body;
+  const restaurant = await Restaurant.findOne({ _id: restaurantId });
+  if (restaurant.status === "closed") {
+    res
+      .status(200)
+      .json({ restaurant, msg: "The restaurant is recently closed!" });
+    return;
+  }
+  const PushSubscription = restaurant.PushSubscription;
+  const x = await webpush.sendNotification(PushSubscription);
+  //console.log("web push send noti", x);
   const newOrder = await Order.create(req.body);
   newOrderRx.next(newOrder);
   res.status(201).json({ newOrder, msg: "success" });

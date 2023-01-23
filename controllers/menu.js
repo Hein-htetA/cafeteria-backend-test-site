@@ -87,6 +87,7 @@ const updateMenu = async (req, res) => {
     name,
     price,
     description,
+    outOfStock,
     menuImage,
     menuPhotoId,
     menuPhotoUrl,
@@ -120,6 +121,7 @@ const updateMenu = async (req, res) => {
         name,
         price,
         description,
+        outOfStock,
         menuPhotoId: newMenuPhotoId,
         menuPhotoUrl: newMenuPhotoUrl,
       },
@@ -146,7 +148,7 @@ const updateMenu = async (req, res) => {
   } else {
     editedMenu = await Menu.findOneAndUpdate(
       { _id: _id },
-      { name, price, description },
+      { name, price, description, outOfStock },
       {
         returnDocument: "after",
         runValidators: true,

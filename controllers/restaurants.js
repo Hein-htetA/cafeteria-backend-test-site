@@ -83,6 +83,7 @@ const updateRestaurant = async (req, res) => {
     restaurantPhotoUrl,
     restaurantPhotoId,
     restaurantImage,
+    status,
   } = req.body;
 
   let updatedRestaurant = {};
@@ -121,6 +122,7 @@ const updateRestaurant = async (req, res) => {
         establishedIn,
         deliveryService,
         paymentMethods,
+        status,
         restaurantPhotoUrl: newRestaurantPhotoUrl,
         restaurantPhotoId: newRestaurantPhotoId,
       },
@@ -166,6 +168,7 @@ const updateRestaurant = async (req, res) => {
         establishedIn,
         delivery,
         paymentMethods,
+        status,
         restaurantPhotoUrl,
         restaurantPhotoId,
       },
@@ -186,6 +189,7 @@ const updateRestaurant = async (req, res) => {
         establishedIn,
         deliveryService,
         paymentMethods,
+        status,
       },
       {
         returnDocument: "after",
@@ -205,6 +209,18 @@ const updateRestaurant = async (req, res) => {
     updatedRestaurant,
     msg: "updated successfully",
   });
+};
+
+const saveSubscriptionToRestaurant = async (req, res) => {
+  const { restaurantId, PushSubscription } = req.body;
+  //console.log("reqbody", req.body);
+  //console.log("pushSub", PushSubscription);
+  const updatedRestaurant = await Restaurant.updateOne(
+    { _id: restaurantId },
+    { PushSubscription }
+  );
+  //console.log("res with sub", updatedRestaurant);
+  res.status(200).json({ msg: "subscription added" });
 };
 
 const getRestaurantById = async (req, res) => {
@@ -259,4 +275,5 @@ module.exports = {
   getRestaurantById,
   getRestaurantByPage,
   getRestaurantByName,
+  saveSubscriptionToRestaurant,
 };
