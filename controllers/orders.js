@@ -47,8 +47,20 @@ const addNewOrder = async (req, res) => {
       .json({ restaurant, msg: "The restaurant is recently closed!" });
     return;
   }
-  const PushSubscription = restaurant.PushSubscription;
-  const x = await webpush.sendNotification(PushSubscription);
+
+  try {
+    const PushSubscription = restaurant.PushSubscription;
+    if (PushSubscription) {
+      const x = await webpush.sendNotification(PushSubscription);
+    }
+  } catch (error) {
+    //subscription expire or error occur
+    const afterRemovePushSub = await Restaurant.updateOne(
+      { _id: restaurantId },
+      { $unset: { PushSubscription: 1 } }
+    );
+  }
+
   //console.log("web push send noti", x);
   const newOrder = await Order.create(req.body);
   newOrderRx.next(newOrder);

@@ -57,11 +57,11 @@ const restaurantSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    required: [true, "Restaurant Status is required"],
     enum: {
       values: ["open", "closed"],
       message: "{VALUE} is not supported",
     },
+    default: "open",
   },
   restaurantPhotoUrl: String,
   restaurantPhotoId: String,
