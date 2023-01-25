@@ -97,12 +97,10 @@ const watchNewOrder = async (req, res) => {
 
   newOrderRx.subscribe((order) => {
     if (order.restaurantId.toString() === restaurantId) {
-      //order restaurant Id is new ObjectId("lorem ispen")
-      // console.log("in if subcribe");
       res.write(`data: ${JSON.stringify(order)}\nid:${order._id}\n\n`);
     }
   });
-  res.write(``);
+  res.write(`data: `); //to send 'data:' is necessary for firefox
 };
 
 const watchUpdateOrder = async (req, res) => {
@@ -115,20 +113,11 @@ const watchUpdateOrder = async (req, res) => {
   updateOrderRx.subscribe((order) => {
     const { _id, orderState, paymentStatus, updatedAt } = order;
     if (order.customerId.toString() === customerId) {
-      //order restaurant Id is new ObjectId("lorem ispen")
-      // console.log("in if subcribe");
-      res.write(
-        `data: ${JSON.stringify({
-          _id,
-          orderState,
-          paymentStatus,
-          updatedAt,
-        })}\nid:${_id}\n\n`
-      );
+      res.write(`data: `); //to send 'data:' is necessary for firefox
     }
   });
 
-  res.write(``);
+  res.write(`data: `);
 };
 
 module.exports = {
