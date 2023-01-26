@@ -100,7 +100,6 @@ const watchNewOrder = async (req, res) => {
       res.write(`data: ${JSON.stringify(order)}\nid:${order._id}\n\n`);
     }
   });
-  res.write(`data: `); //to send 'data:' is necessary for firefox
 };
 
 const watchUpdateOrder = async (req, res) => {
@@ -113,11 +112,16 @@ const watchUpdateOrder = async (req, res) => {
   updateOrderRx.subscribe((order) => {
     const { _id, orderState, paymentStatus, updatedAt } = order;
     if (order.customerId.toString() === customerId) {
-      res.write(`data: `); //to send 'data:' is necessary for firefox
+      res.write(
+        `data: ${JSON.stringify({
+          _id,
+          orderState,
+          paymentStatus,
+          updatedAt,
+        })}\nid:${_id}\n\n`
+      );
     }
   });
-
-  res.write(`data: `);
 };
 
 module.exports = {
